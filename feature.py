@@ -7,7 +7,7 @@ import re, string
 regex = re.compile('[%s]' % re.escape(string.punctuation)) 
 stops = set(stopwords.words("english"))
 
-df_train =  pd.read_csv('train.csv')
+df_train =  pd.read_csv('C:/Users/IBM_ADMIN/Desktop/Machine Learning/quora_nlp/data/train.csv')
 train_qs = pd.Series(df_train['question1'].tolist() + df_train['question2'].tolist()).astype(str)
 
 def get_weights(count, eps = 10, min_count = 2):
