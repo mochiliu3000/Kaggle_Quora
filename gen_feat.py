@@ -1,12 +1,17 @@
 from nlp_utils import stopwords, english_stemmer, stem_tokens, \
-    compute_dist, try_divide, cat_text, getTFV, getBOW
+    compute_dist, try_divide, cat_text, getTFV, getBOW, cosine_sim
+from sklearn.decomposition import TruncatedSVD
 from param_config import config
 import cPickle
 import ngram
+import numpy as np
 import pandas as pd
 import sys
+from scipy.sparse import vstack
+
 reload(sys)
 sys.setdefaultencoding('utf8')
+svd_n_components = [100, 150]
 
 
 # Tokenize and stem the data
@@ -100,18 +105,42 @@ def extract_tfidf_feat(df):
             vec = getTFV(ngram_range=(1,3))
         elif vec_type == "bow":
             vec = getBOW(ngram_range=(1,3))
+
+        # get common vocabulary
         vec.fit(df["all_text"])
         vocabulary = vec.vocabulary_
-        for feat_name in feat_names:
-            print("generate %s feat for %s" % (vec_type, feat_name))
-            if vec_type == "tfidf":
-                vec = getTFV(ngram_range=(1,3), vocabulary=vocabulary)
-            elif vec_type == "bow":
-                vec = getBOW(ngram_range=(1,3), vocabulary=vocabulary)
-            X_vec = vec.fit_transform(df[feat_name])
-            with open("%s/train.%s.%s.pkl" % (config.processed_data_path, feat_name, vec_type), "wb") as f:
-                cPickle.dump(X_vec, f, -1)
+        print("generate %s feat for %s" % (vec_type, feat_names[0]))
+        if vec_type == "tfidf":
+            vec = getTFV(ngram_range=(1, 3), vocabulary=vocabulary)
+        elif vec_type == "bow":
+            vec = getBOW(ngram_range=(1, 3), vocabulary=vocabulary)
 
+        # fit common vocabulary on each specific question
+        q1_vec = vec.fit_transform(df[feat_names[0]])
+        with open("%s/train.%s.%s.pkl" % (config.processed_data_path, feat_names[0], vec_type), "wb") as f:
+            cPickle.dump(q1_vec, f, -1)
+        q2_vec = vec.fit_transform(df[feat_names[1]])
+        with open("%s/train.%s.%s.pkl" % (config.processed_data_path, feat_names[1], vec_type), "wb") as f:
+            cPickle.dump(q2_vec, f, -1)
+        print("q1_vec has shape: %s, while q2_vec has shape: %s" % (q1_vec.shape, q2_vec.shape))
+
+        # calculate Cos distance of these 2 vecs
+        print("generate common %s cosine sim feat for q1 and q2" % vec_type)
+        df["%s_cos_of_q1_q2" % vec_type] = np.asarray(map(cosine_sim, q1_vec, q2_vec))[:, np.newaxis]
+
+        # calculate SVD Cos distance of these 2 vecs
+        print("generate svd %s cosine sim feat for q1 and q2" % vec_type)
+        # vertically stack q1 and q2
+        q1_q2_vec = vstack([q1_vec, q2_vec])
+        for n_components in svd_n_components:
+            svd = TruncatedSVD(n_components=n_components, n_iter=15)
+            svd.fit(q1_q2_vec)
+            q1_svd_vec = svd.transform(q1_vec)
+            q2_svd_vec = svd.transform(q2_vec)
+            print("q1_svd_vec has shape: %s, while q2_svd_vec has shape: %s" % (q1_svd_vec.shape, q2_svd_vec.shape))
+            df["svd%s_%s_cos_of_q1_q2" % (n_components, vec_type)] = np.asarray(map(cosine_sim, q1_svd_vec, q2_svd_vec))[:, np.newaxis]
+
+        return df
 
 if __name__ == "__main__":
     dfTrain_path = "%s/train.csv" % config.data_path
@@ -119,6 +148,7 @@ if __name__ == "__main__":
     dfTrain = pd.read_csv(dfTrain_path)
     dfTest = pd.read_csv(dfTest_path)
     print(dfTrain.head())
+
 
     # Generate ngram = 1, 2, 3
     dfTrain = gen_ngram_data(dfTrain)
@@ -144,8 +174,7 @@ if __name__ == "__main__":
     print("Dumped distance features to df...")
 
     # Extract tfidf features
-    extract_tfidf_feat(dfTrain)
-    print("Dumped tfidf features to df...")
-    with open("%s/train.%s.%s.pkl" % (config.processed_data_path, "question1", "tfidf"), "rb") as f:
-        tfidf_matrix = cPickle.load(f)
-    print(tfidf_matrix)
+    dfTrain_dist_tfidf = extract_tfidf_feat(dfTrain_dist)
+    with open("%s/train.gen.tfidf.pkl" % config.processed_data_path, "wb") as f:
+        cPickle.dump(dfTrain_dist_tfidf, f, -1)
+    print(dfTrain_dist_tfidf.head())

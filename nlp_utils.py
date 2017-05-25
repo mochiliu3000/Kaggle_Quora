@@ -1,5 +1,6 @@
 import nltk
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 from param_config import config
 
 #################
@@ -58,6 +59,17 @@ def compute_dist(A, B, dist="jaccard_coef"):
         d = JaccardCoef(A, B)
     elif dist == "dice_dist":
         d = DiceDist(A, B)
+    return d
+
+## compute cosine similarity
+def cosine_sim(x, y):
+    try:
+        d = cosine_similarity(x, y)
+        d = d[0][0]
+    except:
+        print x
+        print y
+        d = 0.
     return d
 
 
