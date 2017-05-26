@@ -27,8 +27,8 @@ dice_dist between q1 and q2
 ```
 
 ```
-tfidf of q1 docs
-tfidf of q2 docs
-BOW of q1 docs
-BOW of q2 docs
+cosine similarity of q1&q2 tfidf
+cosine similarity of q1&q2 BOW
+cosine similarity of q1&q2 SVD tfidf
+cosine similarity of q1&q2 SVD BOW
 ```
