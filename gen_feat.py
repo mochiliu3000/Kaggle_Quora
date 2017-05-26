@@ -117,11 +117,11 @@ def extract_tfidf_feat(df):
 
         # fit common vocabulary on each specific question
         q1_vec = vec.fit_transform(df[feat_names[0]])
-        with open("%s/train.%s.%s.pkl" % (config.processed_data_path, feat_names[0], vec_type), "wb") as f:
-            cPickle.dump(q1_vec, f, -1)
+#        with open("%s/train.%s.%s.pkl" % (config.processed_data_path, feat_names[0], vec_type), "wb") as f:
+#            cPickle.dump(q1_vec, f, -1)
         q2_vec = vec.fit_transform(df[feat_names[1]])
-        with open("%s/train.%s.%s.pkl" % (config.processed_data_path, feat_names[1], vec_type), "wb") as f:
-            cPickle.dump(q2_vec, f, -1)
+#        with open("%s/train.%s.%s.pkl" % (config.processed_data_path, feat_names[1], vec_type), "wb") as f:
+#            cPickle.dump(q2_vec, f, -1)
         print("q1_vec has shape: %s, while q2_vec has shape: %s" % (q1_vec.shape, q2_vec.shape))
 
         # calculate Cos distance of these 2 vecs
