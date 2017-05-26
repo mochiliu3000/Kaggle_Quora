@@ -7,7 +7,7 @@ import re, string
 regex = re.compile('[%s]' % re.escape(string.punctuation)) 
 stops = set(stopwords.words("english"))
 
-df_train =  pd.read_csv('C:/Users/IBM_ADMIN/Desktop/Machine Learning/quora_nlp/data/train.csv')
+df_train =  pd.read_csv('train.csv')
 train_qs = pd.Series(df_train['question1'].tolist() + df_train['question2'].tolist()).astype(str)
 
 def get_weights(count, eps = 10, min_count = 2):
@@ -39,7 +39,7 @@ def word_match_share(row):
 	if len(q1w) * len(q2w) == 0:
 		return 0 
 	else:
-		return len(set(q1w) & set(q2w)) / float(len(set(q1w + q2w)))
+		return len(set(q1w) & set(q2w)) / float(len(set(q1w + q2w)) + 1)
 
 def tfidf_word_match_share(row):
 	q1w = []
@@ -62,7 +62,7 @@ def tfidf_word_match_share(row):
 	else:
 		share_weights = [weights.get(w,0) for w in list(set(q1w) & set(q2w))]
 		union_weights = [weights.get(w,0) for w in list(set(q1w + q2w))]
-		return np.sum(share_weights) / float(np.sum(union_weights))
+		return np.sum(share_weights) / float(np.sum(union_weights) + 1)
 		
 		
 
