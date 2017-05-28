@@ -32,3 +32,14 @@ cosine similarity of q1&q2 BOW
 cosine similarity of q1&q2 SVD tfidf
 cosine similarity of q1&q2 SVD BOW
 ```
+
+
+##  Modeling 
+
+### Simple Models
+
+```
+logistic regression -- train AUC scores: 0.804
+
+xgboost -- test AUC scores: 0.85+ ( still processing)
+```
