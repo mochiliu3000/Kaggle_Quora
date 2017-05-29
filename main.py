@@ -50,15 +50,20 @@ def xgb_fit(X, Y):
 # 	 Dumped XGB models into models folder
 # 	para_name = ""
 # 	for k, v in grid.best_params_.items():
-# 		para_name += "_%s_%s"(k,v)
+# 		para_name += "_%s_%s"%(k,v)
 # 
 # 	with open("models/AL_xgb%s.pkl"%(para_name), "wb") as f:
 # 		cPickle.dump(grid, f, -1)
 	
-	grid = cPickle(open("models/AL_xgb.....", "rb"))
+	grid = cPickle.load(open("models/AL_xgb_learning_rate_0.1_reg_alpha_0.1_min_child_weight_1_max_depth_9.pkl", "rb"))
 	
 	
-	print (grid.best_params_, grid.best_score_)
+	print (grid.best_params_, grid.best_score_) 
+	
+	'''
+	({'learning_rate': 0.1, 'reg_alpha': 0.1, 'min_child_weight': 1, 'max_depth': 9}, 0.8720490539202848)
+	'''
+	
 
 	return grid.best_estimator_  # return best estimator for xgb
 
