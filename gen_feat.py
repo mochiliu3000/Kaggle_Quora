@@ -142,6 +142,7 @@ def extract_tfidf_feat(df):
 
         return df
 
+'''
 if __name__ == "__main__":
     dfTrain_path = "%s/train.csv" % config.data_path
     dfTest_path = "%s/test.csv" % config.data_path
@@ -178,3 +179,4 @@ if __name__ == "__main__":
     with open("%s/train.gen.tfidf.pkl" % config.processed_data_path, "wb") as f:
         cPickle.dump(dfTrain_dist_tfidf, f, -1)
     print(dfTrain_dist_tfidf.head())
+'''
