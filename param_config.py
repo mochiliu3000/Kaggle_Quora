@@ -7,7 +7,7 @@ class ParamConfig:
         self.processed_data_path = processed_data_path
         self.stemmer_type = stemmer_type
 
-config = ParamConfig(data_path = "../data",
-                     processed_data_path = "../processed_data",
+config = ParamConfig(data_path = "./data",
+                     processed_data_path = "./processed_data",
                      stemmer_type = "snowball")
 

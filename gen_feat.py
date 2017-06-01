@@ -11,7 +11,7 @@ from scipy.sparse import vstack
 
 reload(sys)
 sys.setdefaultencoding('utf8')
-svd_n_components = [100, 150]
+svd_n_components = [100, 50]
 
 
 # Tokenize and stem the data
@@ -109,7 +109,7 @@ def extract_tfidf_feat(df):
         # get common vocabulary
         vec.fit(df["all_text"])
         vocabulary = vec.vocabulary_
-        print("generate %s feat for %s" % (vec_type, feat_names[0]))
+        print("generate ngram %s feat for %s" % (vec_type, feat_names[0]))
         if vec_type == "tfidf":
             vec = getTFV(ngram_range=(1, 3), vocabulary=vocabulary)
         elif vec_type == "bow":
@@ -140,7 +140,7 @@ def extract_tfidf_feat(df):
             print("q1_svd_vec has shape: %s, while q2_svd_vec has shape: %s" % (q1_svd_vec.shape, q2_svd_vec.shape))
             df["svd%s_%s_cos_of_q1_q2" % (n_components, vec_type)] = np.asarray(map(cosine_sim, q1_svd_vec, q2_svd_vec))[:, np.newaxis]
 
-        return df
+    return df
 
 '''
 if __name__ == "__main__":

@@ -32,16 +32,16 @@ def xgb_fit(X, Y, X_test):
     '''
 
 
-    gbm = xgb.XGBClassifier(n_estimators = 1000,
+    gbm = xgb.XGBClassifier(n_estimators = 1500,
                             subsample=0.8,
                             colsample_bytree=0.8,
                             objective= 'binary:logistic',
                             nthread = -1)
     gbm_params = {
-        'learning_rate': [0.05, 0.07, 0.1],
+        'learning_rate': [0.05, 0.07, 0.1, 0.3],
         'max_depth': range(3, 10, 1),
         'min_child_weight': [1, 2, 3, 4, 5],
-        'reg_alpha': [1e-5, 1e-2, 0.1, 1]
+        'reg_alpha': [1e-5, 1e-2, 0.1, 1, 5]
     }
     cv = StratifiedKFold(Y)
     grid = GridSearchCV(gbm, gbm_params,scoring='roc_auc',cv=cv,verbose=10,n_jobs=-1)
@@ -77,7 +77,7 @@ def xgb_fit(X, Y, X_test):
 if __name__ == "__main__":
 
     #  Loaded data
-    df_train = pd.read_csv("%s/train_small.csv" % config.data_path)
+    df_train = pd.read_csv("%s/train.csv" % config.data_path)
     df_test = pd.read_csv("%s/test.csv"  % config.data_path)
 
     #  Applied functions to extract features
@@ -89,11 +89,13 @@ if __name__ == "__main__":
     df_train = gen_ngram_data(df_train)
     df_train = extract_counting_feat(df_train)
     df_train = extract_distance_feat(df_train)
-    #extract_tfidf_feat(df_train)
+    df_train = extract_tfidf_feat(df_train)
     df_test = gen_ngram_data(df_test)
     df_test = extract_counting_feat(df_test)
     df_test = extract_distance_feat(df_test)
-    #extract_tfidf_feat(df_test)
+    df_test = extract_tfidf_feat(df_test)
+
+    col_names = df_train.columns.values
 
     feat = [ 'word_match', 'tfdif_word_match',
          'count_of_q1_unigram', 'count_of_unique_q1_unigram',
@@ -118,7 +120,10 @@ if __name__ == "__main__":
          'jaccard_coef_of_trigram_between_q1_q2',
          'dice_dist_of_unigram_between_q1_q2',
          'dice_dist_of_bigram_between_q1_q2',
-         'dice_dist_of_trigram_between_q1_q2']
+         'dice_dist_of_trigram_between_q1_q2', 'tfidf_cos_of_q1_q2', 
+         'bow_cos_of_q1_q2', 'svd100_tfidf_cos_of_q1_q2', 
+         'svd100_tfidf_cos_of_q1_q2', 'svd50_bow_cos_of_q1_q2', 
+         'svd50_bow_cos_of_q1_q2']
 
     X_train = df_train[feat]
     Y_train = df_train['is_duplicate']
@@ -129,10 +134,3 @@ if __name__ == "__main__":
 
     # XGB
     xgb_model = xgb_fit(X_train, Y_train, X_test)
-
-
-
-
-
-
-
