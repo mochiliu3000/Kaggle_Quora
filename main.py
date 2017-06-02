@@ -95,6 +95,9 @@ if __name__ == "__main__":
     df_test = extract_distance_feat(df_test)
     df_test = extract_tfidf_feat(df_test)
 
+    df_train.to_csv("%s/df_train_new.csv" % config.data_path, index=False)
+    df_test.to_csv("%s/df_test_new.csv" % config.data_path, index=False)
+
     col_names = df_train.columns.values
 
     feat = [ 'word_match', 'tfdif_word_match',
@@ -121,9 +124,7 @@ if __name__ == "__main__":
          'dice_dist_of_unigram_between_q1_q2',
          'dice_dist_of_bigram_between_q1_q2',
          'dice_dist_of_trigram_between_q1_q2', 'tfidf_cos_of_q1_q2', 
-         'bow_cos_of_q1_q2', 'svd100_tfidf_cos_of_q1_q2', 
-         'svd100_tfidf_cos_of_q1_q2', 'svd50_bow_cos_of_q1_q2', 
-         'svd50_bow_cos_of_q1_q2']
+         'bow_cos_of_q1_q2'] 
 
     X_train = df_train[feat]
     Y_train = df_train['is_duplicate']

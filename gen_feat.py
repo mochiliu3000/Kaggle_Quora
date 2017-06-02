@@ -129,16 +129,16 @@ def extract_tfidf_feat(df):
         df["%s_cos_of_q1_q2" % vec_type] = np.asarray(map(cosine_sim, q1_vec, q2_vec))[:, np.newaxis]
 
         # calculate SVD Cos distance of these 2 vecs
-        print("generate svd %s cosine sim feat for q1 and q2" % vec_type)
+#        print("generate svd %s cosine sim feat for q1 and q2" % vec_type)
         # vertically stack q1 and q2
-        q1_q2_vec = vstack([q1_vec, q2_vec])
-        for n_components in svd_n_components:
-            svd = TruncatedSVD(n_components=n_components, n_iter=15)
-            svd.fit(q1_q2_vec)
-            q1_svd_vec = svd.transform(q1_vec)
-            q2_svd_vec = svd.transform(q2_vec)
-            print("q1_svd_vec has shape: %s, while q2_svd_vec has shape: %s" % (q1_svd_vec.shape, q2_svd_vec.shape))
-            df["svd%s_%s_cos_of_q1_q2" % (n_components, vec_type)] = np.asarray(map(cosine_sim, q1_svd_vec, q2_svd_vec))[:, np.newaxis]
+#        q1_q2_vec = vstack([q1_vec, q2_vec])
+#        for n_components in svd_n_components:
+#            svd = TruncatedSVD(n_components=n_components, n_iter=15)
+#            svd.fit(q1_q2_vec)
+#            q1_svd_vec = svd.transform(q1_vec)
+#            q2_svd_vec = svd.transform(q2_vec)
+#            print("q1_svd_vec has shape: %s, while q2_svd_vec has shape: %s" % (q1_svd_vec.shape, q2_svd_vec.shape))
+#            df["svd%s_%s_cos_of_q1_q2" % (n_components, vec_type)] = np.asarray(map(cosine_sim, q1_svd_vec, q2_svd_vec))[:, np.newaxis]
 
     return df
 
