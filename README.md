@@ -43,5 +43,6 @@ logistic regression -- train AUC scores: 0.804
 
 xgboost -- test AUC scores: 0.872
 
-LSTM/GRU -- following the leaky feature solution of lystdo: https://www.kaggle.com/lystdo/lb-0-18-lstm-with-glove-and-magic-features
+LSTM/GRU -- following the leaky feature solution of lystdo: 
+https://www.kaggle.com/lystdo/lb-0-18-lstm-with-glove-and-magic-features
 ```
