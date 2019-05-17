@@ -11,7 +11,7 @@ from sklearn.cross_validation import cross_val_score
 import xgboost as xgb
 from param_config import config
 
-
+print("hello")
 
 def logit_fit(X, Y):
 
